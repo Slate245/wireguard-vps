@@ -14,10 +14,12 @@
 
   tasks:
     - name: Update apt cache
+      become: true
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
     - name: Ensure sudo is installed
+      become: true
       ansible.builtin.apt:
         name: sudo
         state: present
@@ -30,3 +32,14 @@
         state: present
         groups:
           - sudo
+    - name: Ensure systemd lingering is enabled
+      become: true
+      ansible.builtin.command:
+        cmd: loginctl enable-linger ivan
+        creates: /var/lib/systemd/linger/ivan
+    - name: Ensure user has access to lingering directory
+      become: true
+      ansible.builtin.file:
+        path: /var/lib/systemd/linger/ivan
+        group: ivan
+        owner: ivan
