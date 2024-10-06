@@ -36,6 +36,10 @@
         state: present
         groups:
           - sudo
+    - name: Ensure ufw is installed
+      ansible.builtin.apt:
+        name: ufw
+        state: present
     - name: Ensure service directory exists
       become: true
       ansible.builtin.file:
@@ -53,3 +57,19 @@
         project_src: /srv/wg-easy
         files:
           - compose.yml
+    - name: Ensure ufw blocks incoming traffic by default
+      community.general.ufw:
+        default: deny
+    - name: Ensure ufw limits SSH traffic
+      community.general.ufw:
+        rule: limit
+        port: ssh
+        proto: tcp
+    - name: Ensure ufw allows traffic to WireGuard
+      community.general.ufw:
+        rule: allow
+        port: "52820"
+        proto: udp
+    - name: Ensure ufw is enabled
+      community.general.ufw:
+        state: enabled
