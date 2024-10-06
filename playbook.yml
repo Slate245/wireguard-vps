@@ -1,6 +1,10 @@
 ---
 - name: Set up WireGuard VPN
   hosts: all
+  become: true
+
+  roles:
+    - geerlingguy.docker
 
   vars:
     username: ivan
@@ -32,14 +36,20 @@
         state: present
         groups:
           - sudo
-    - name: Ensure systemd lingering is enabled
-      become: true
-      ansible.builtin.command:
-        cmd: loginctl enable-linger ivan
-        creates: /var/lib/systemd/linger/ivan
-    - name: Ensure user has access to lingering directory
+    - name: Ensure service directory exists
       become: true
       ansible.builtin.file:
-        path: /var/lib/systemd/linger/ivan
-        group: ivan
-        owner: ivan
+        dest: /srv/wg-easy
+        state: directory
+        mode: "0755"
+    - name: Ensure compose file is in the service directory
+      become: true
+      ansible.builtin.copy:
+        src: compose.yml
+        dest: /srv/wg-easy/compose.yml
+        mode: "0644"
+    - name: Deply wg-easy with docker-compose
+      community.docker.docker_compose_v2:
+        project_src: /srv/wg-easy
+        files:
+          - compose.yml
