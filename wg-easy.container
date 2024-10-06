@@ -1,0 +1,15 @@
+[Container]
+AddCapability=NET_ADMIN NET_RAW SYS_MODULE
+ContainerName=wg-easy
+Environment=WG_HOST=192.168.33.10
+Image=ghcr.io/wg-easy/wg-easy
+PublishPort=51820:51820/udp
+PublishPort=51821:51821/tcp
+Sysctl=net.ipv4.ip_forward=1 net.ipv4.conf.all.src_valid_mark=1
+Volume=%h/volumes/wg-easy:/etc/wireguard
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

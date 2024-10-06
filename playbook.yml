@@ -43,3 +43,24 @@
         path: /var/lib/systemd/linger/ivan
         group: ivan
         owner: ivan
+    - name: Ensure podman is installed
+      become: true
+      ansible.builtin.apt:
+        name: podman
+        state: present
+    - name: Ensure directory for quadlets exists for login user
+      become: true
+      ansible.builtin.file:
+        dest: /home/ivan/.config/containers/systemd
+        state: directory
+        owner: ivan
+        group: ivan
+        mode: "0755"
+    - name: Ensure wg-easy quadlet is present in login user home
+      become: true
+      ansible.builtin.copy:
+        src: ./wg-easy.container
+        dest: /home/ivan/.config/containers/systemd/WgEasy.container
+        owner: ivan
+        group: ivan
+        mode: "0644"
