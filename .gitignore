@@ -6,3 +6,6 @@
 
 # Production inventory information
 inventories/production/
+
+# Python virtual env
+.venv/

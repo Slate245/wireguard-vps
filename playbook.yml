@@ -6,6 +6,12 @@
   roles:
     - geerlingguy.docker
 
+  vars_prompt:
+    - name: wg_password
+      prompt: Enter password for wg-easy web ui...
+      confirm: true
+      encrypt: bcrypt
+
   tasks:
     - name: Update apt cache
       become: true
@@ -29,11 +35,11 @@
         mode: "0755"
     - name: Ensure compose file is in the service directory
       become: true
-      ansible.builtin.copy:
-        src: compose.yml
+      ansible.builtin.template:
+        src: compose.yml.j2
         dest: /srv/wg-easy/compose.yml
         mode: "0644"
-    - name: Deply wg-easy with docker-compose
+    - name: Deploy wg-easy with docker-compose
       community.docker.docker_compose_v2:
         project_src: /srv/wg-easy
         files:
