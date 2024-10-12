@@ -6,16 +6,6 @@
   roles:
     - geerlingguy.docker
 
-  vars:
-    username: ivan
-
-  vars_prompt:
-    - name: password
-      prompt: "Введите пароль для пользователя {{username}}..."
-      private: true
-      encrypt: sha512_crypt
-      confirm: true
-
   tasks:
     - name: Update apt cache
       become: true
@@ -27,15 +17,6 @@
       ansible.builtin.apt:
         name: sudo
         state: present
-    - name: Ensure login user is present
-      become: true
-      ansible.builtin.user:
-        user: "{{ username }}"
-        password: "{{ password }}"
-        shell: /bin/bash
-        state: present
-        groups:
-          - sudo
     - name: Ensure ufw is installed
       ansible.builtin.apt:
         name: ufw
