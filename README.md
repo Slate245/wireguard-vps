@@ -10,6 +10,8 @@
 - ansible v2.16.11
 - pipenv
 
+Плейбук рассчитан на настройку хостов с Debian 12.
+
 ## Использование
 
 Подготовьте VPS для подключения по SSH.
@@ -24,7 +26,7 @@ ansible-galaxy install -r requirements.yml
 Запустите настройку
 
 ```sh
-ansible-playbook -i inventories/production playbook.yml
+ansible-playbook -i inventories/production playbook.yml -K
 ```
 
 По завершении выполнения плейбука на VPS будет развернут [wg-easy](https://github.com/wg-easy/wg-easy) с помощью `docker`. Доступ к веб-интерфейсу из внешней сети заблокирован. Чтобы подключиться к веб-интерфейсу используйте команду
